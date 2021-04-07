@@ -16,7 +16,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class FlutterAppUpdate {
-  static const MethodChannel _channel = const MethodChannel('flutter_app_update');
+  static const MethodChannel _channel =
+      const MethodChannel('flutter_app_update');
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
@@ -32,22 +33,23 @@ class FlutterAppUpdate {
     String url,
   }) async {
     var info = await PackageInfo.get();
-
     int number = int.parse(info.buildNumber);
+
     if (number < (code ?? 0)) {
       return await showDialog<bool>(
         context: context,
         barrierDismissible: false,
-        child: _ShowDialog(
-          url: url,
-          number: number,
-          content: content,
-          minCode: minCode,
-          name: name,
-        ),
+        builder: (context) {
+          return _ShowDialog(
+            url: url,
+            number: number,
+            content: content,
+            minCode: minCode,
+            name: name,
+          );
+        },
       );
     }
-
     return false;
   }
 
@@ -103,7 +105,8 @@ class __ShowDialogState extends State<_ShowDialog> {
                 padding: const EdgeInsets.only(left: 16, bottom: 16, right: 16),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(10)),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -135,7 +138,8 @@ class __ShowDialogState extends State<_ShowDialog> {
                       Padding(
                         padding: const EdgeInsets.only(top: 16, bottom: 8),
                         child: LinearProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF310A)),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Color(0xFFFF310A)),
                           backgroundColor: Color(0xFFFF8D38),
                           value: _currentProgress,
                           minHeight: 8,
@@ -145,7 +149,8 @@ class __ShowDialogState extends State<_ShowDialog> {
                       Padding(
                         padding: const EdgeInsets.only(top: 8),
                         child: ButtonTheme(
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -154,7 +159,8 @@ class __ShowDialogState extends State<_ShowDialog> {
                                   padding: const EdgeInsets.only(right: 8.0),
                                   child: FlatButton(
                                     child: Text('跳过'),
-                                    onPressed: () => Navigator.of(context).pop(false),
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
                                   ),
                                 ),
                               RaisedButton(
@@ -181,7 +187,9 @@ class __ShowDialogState extends State<_ShowDialog> {
 
   _onUpdate(BuildContext context) async {
     try {
-      Directory directory = Platform.isWindows ? Directory.current : await getTemporaryDirectory();
+      Directory directory = Platform.isWindows
+          ? Directory.current
+          : await getTemporaryDirectory();
       String savePath = directory.path + "/sports_app_${widget.name}.apk";
 
       if (Platform.isAndroid) {
@@ -195,7 +203,8 @@ class __ShowDialogState extends State<_ShowDialog> {
           _currentProgress = 0;
         });
 
-        await Dio().download(widget.url, savePath, onReceiveProgress: (count, total) {
+        await Dio().download(widget.url, savePath,
+            onReceiveProgress: (count, total) {
           setState(() {
             _currentProgress = count / total;
           });
